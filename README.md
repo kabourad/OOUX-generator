@@ -205,4 +205,4 @@ MIT License - Free to use and modify!
 
 ---
 
-Made with ❤️ for the UX design community
+Made with ❤️ for the Yakeey design team
