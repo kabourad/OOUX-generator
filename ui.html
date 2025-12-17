@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0f1115;
+      color: #e4e4e7;
+      font-size: 11px;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #5C94E0 0%, #4A7BC7 100%);
+      padding: 14px 16px;
+    }
+    
+    .header h1 { font-size: 13px; font-weight: 700; color: #fff; }
+    .header p { font-size: 9px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+    
+    .content { padding: 14px 16px; }
+    
+    .section { margin-bottom: 14px; }
+    
+    .section-title {
+      font-size: 8px;
+      font-weight: 700;
+      color: #5C94E0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    .field { margin-bottom: 10px; }
+    
+    .field label {
+      display: block;
+      font-size: 9px;
+      font-weight: 500;
+      color: #71717a;
+      margin-bottom: 4px;
+    }
+    
+    .field input, .field textarea, .field select {
+      width: 100%;
+      padding: 8px 10px;
+      background: #1a1d23;
+      border: 1px solid #2a2d35;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #e4e4e7;
+      font-family: inherit;
+    }
+    
+    .field select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2371717a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+    
+    .field textarea {
+      resize: none;
+      height: 44px;
+    }
+    
+    .field input:focus, .field textarea:focus, .field select:focus {
+      outline: none;
+      border-color: #5C94E0;
+    }
+    
+    .row { display: flex; gap: 8px; }
+    .row .field { flex: 1; }
+    
+    /* AI Button */
+    .ai-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    
+    .ai-row .field { flex: 1; }
+    
+    .btn-ai {
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #9333EA, #7C3AED);
+      border: none;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .btn-ai:hover { opacity: 0.9; }
+    .btn-ai:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .btn-ai .spinner {
+      width: 10px;
+      height: 10px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Color Legend */
+    .color-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: #1a1d23;
+      border-radius: 4px;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 8px;
+      color: #71717a;
+    }
+    
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+    
+    .legend-dot.core { background: #FF9800; }
+    .legend-dot.attr { background: #FDD835; }
+    .legend-dot.nested { background: #81D4FA; }
+    .legend-dot.cta-pri { background: #4CAF50; }
+    .legend-dot.cta-sec { background: #A5D6A7; }
+    
+    /* Size variants checkboxes */
+    .variants-section {
+      margin-bottom: 10px;
+    }
+    
+    .variants-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    
+    .variants-label span {
+      font-size: 9px;
+      color: #71717a;
+    }
+    
+    .select-all {
+      font-size: 8px;
+      color: #5C94E0;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    
+    .variants-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    
+    .variant-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 8px;
+      background: #1a1d23;
+      border: 1px solid #2a2d35;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .variant-checkbox:hover {
+      border-color: #5C94E0;
+    }
+    
+    .variant-checkbox.checked {
+      background: rgba(92, 148, 224, 0.2);
+      border-color: #5C94E0;
+    }
+    
+    .variant-checkbox input {
+      width: 12px;
+      height: 12px;
+      accent-color: #5C94E0;
+      cursor: pointer;
+    }
+    
+    .variant-checkbox span {
+      font-size: 10px;
+      font-weight: 600;
+      color: #e4e4e7;
+    }
+    
+    /* Structure inputs */
+    .structure-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    
+    .structure-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      background: #1a1d23;
+      border: 1px solid #2a2d35;
+      border-radius: 4px;
+    }
+    
+    .structure-item.attr { border-left: 3px solid #FDD835; }
+    .structure-item.nested { border-left: 3px solid #81D4FA; }
+    .structure-item.cta { border-left: 3px solid #4CAF50; }
+    
+    .structure-item label {
+      font-size: 8px;
+      color: #71717a;
+      text-align: center;
+    }
+    
+    .structure-item input {
+      width: 40px;
+      padding: 5px;
+      text-align: center;
+      background: #0f1115;
+      border: 1px solid #2a2d35;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #e4e4e7;
+    }
+    
+    .structure-item input:focus {
+      outline: none;
+      border-color: #5C94E0;
+    }
+    
+    /* AI Status */
+    .ai-status {
+      padding: 8px 12px;
+      background: rgba(147, 51, 234, 0.1);
+      border: 1px solid rgba(147, 51, 234, 0.3);
+      border-radius: 4px;
+      font-size: 9px;
+      color: #C084FC;
+      margin-bottom: 10px;
+      display: none;
+    }
+    
+    .ai-status.visible { display: block; }
+    .ai-status.success { 
+      background: rgba(76, 175, 80, 0.1);
+      border-color: rgba(76, 175, 80, 0.3);
+      color: #81C784;
+    }
+    .ai-status.error { 
+      background: rgba(244, 67, 54, 0.1);
+      border-color: rgba(244, 67, 54, 0.3);
+      color: #E57373;
+    }
+    
+    .footer {
+      padding: 12px 16px;
+      background: #0a0b0d;
+      border-top: 1px solid #1a1d23;
+      display: flex;
+      gap: 8px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    
+    .btn-cancel {
+      background: #1a1d23;
+      color: #71717a;
+    }
+    
+    .btn-cancel:hover { background: #2a2d35; color: #a1a1aa; }
+    
+    .btn-generate {
+      background: linear-gradient(135deg, #5C94E0, #4A7BC7);
+      color: #fff;
+      flex: 2;
+    }
+    
+    .btn-generate:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>OOUX Object Template</h1>
+    <p>Object-Oriented UX Designer</p>
+  </div>
+  
+  <div class="content">
+    <div class="section">
+      <div class="section-title">Object Identity</div>
+      
+      <div class="color-legend">
+        <div class="legend-item"><div class="legend-dot core"></div>Core Content</div>
+        <div class="legend-item"><div class="legend-dot attr"></div>Attributes</div>
+        <div class="legend-item"><div class="legend-dot nested"></div>Nested Objects</div>
+        <div class="legend-item"><div class="legend-dot cta-pri"></div>Primary CTA</div>
+        <div class="legend-item"><div class="legend-dot cta-sec"></div>Secondary CTA</div>
+      </div>
+      
+      <div class="field">
+          <label>Object Name</label>
+          <input type="text" id="objectName" placeholder="e.g. CLIENT, DEMANDE DE PRÊT, CONTRAT">
+        </div>
+        
+        <div class="field">
+          <label>Domain / Industry Context</label>
+          <select id="domainContext">
+            <option value="banking">🏦 Banque / Finance</option>
+            <option value="ecommerce">🛒 E-commerce</option>
+            <option value="healthcare">🏥 Santé</option>
+            <option value="insurance">📋 Assurance</option>
+            <option value="realestate">🏠 Immobilier</option>
+            <option value="hr">👥 RH / Gestion du personnel</option>
+            <option value="education">📚 Éducation</option>
+            <option value="logistics">📦 Logistique / Transport</option>
+            <option value="crm">💼 CRM / Relation client</option>
+            <option value="generic">📁 Générique</option>
+          </select>
+        </div>
+        
+        <button class="btn-ai" id="btnAI" onclick="generateWithAI()">
+          <span id="aiIcon">✨</span>
+          <span id="aiText">AI Suggest</span>
+        </button>
+      
+      <div class="ai-status" id="aiStatus"></div>
+      
+      <div class="row">
+        <div class="field">
+          <label>Tag</label>
+          <input type="text" id="objectTag" placeholder="e.g. CTA">
+        </div>
+        <div class="field">
+          <label>Étape du parcours</label>
+          <input type="text" id="stage" placeholder="e.g. creation, validation">
+        </div>
+      </div>
+      
+      <div class="field">
+        <label>Object Definition</label>
+        <textarea id="objectDef" placeholder="Describe what this object represents..."></textarea>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Structure</div>
+      
+      <div class="structure-row">
+        <div class="structure-item attr">
+          <label>Attributes</label>
+          <input type="number" id="attrCount" value="8" min="0" max="20">
+        </div>
+        <div class="structure-item nested">
+          <label>Nested Obj</label>
+          <input type="number" id="relCount" value="5" min="0" max="15">
+        </div>
+        <div class="structure-item cta">
+          <label>CTAs</label>
+          <input type="number" id="ctaCount" value="6" min="0" max="12">
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Size Variants</div>
+      
+      <div class="variants-section">
+        <div class="variants-label">
+          <span>Select which sizes to include</span>
+          <span class="select-all" onclick="toggleAll()">Select all</span>
+        </div>
+        
+        <div class="variants-grid">
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeXXS" checked onchange="updateCheckbox(this)">
+            <span>XXS</span>
+          </label>
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeXS" checked onchange="updateCheckbox(this)">
+            <span>XS</span>
+          </label>
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeS" checked onchange="updateCheckbox(this)">
+            <span>S</span>
+          </label>
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeM" checked onchange="updateCheckbox(this)">
+            <span>M</span>
+          </label>
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeL" checked onchange="updateCheckbox(this)">
+            <span>L</span>
+          </label>
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeXL" checked onchange="updateCheckbox(this)">
+            <span>XL</span>
+          </label>
+          <label class="variant-checkbox checked">
+            <input type="checkbox" id="sizeXXL" checked onchange="updateCheckbox(this)">
+            <span>XXL</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <button class="btn-cancel" onclick="onCancel()">Cancel</button>
+    <button class="btn-generate" onclick="onGenerate()">Generate Template</button>
+  </div>
+  
+  <script>
+    // Store AI-generated suggestions
+    var aiSuggestions = null;
+    
+    function updateCheckbox(input) {
+      var label = input.parentElement;
+      if (input.checked) {
+        label.classList.add('checked');
+      } else {
+        label.classList.remove('checked');
+      }
+    }
+    
+    function toggleAll() {
+      var checkboxes = document.querySelectorAll('.variant-checkbox input');
+      var allChecked = Array.from(checkboxes).every(function(cb) { return cb.checked; });
+      checkboxes.forEach(function(cb) {
+        cb.checked = !allChecked;
+        updateCheckbox(cb);
+      });
+    }
+    
+    function showAIStatus(message, type) {
+      var status = document.getElementById('aiStatus');
+      status.textContent = message;
+      status.className = 'ai-status visible';
+      if (type) status.classList.add(type);
+    }
+    
+    function hideAIStatus() {
+      document.getElementById('aiStatus').className = 'ai-status';
+    }
+    
+    function setAILoading(loading) {
+      var btn = document.getElementById('btnAI');
+      var icon = document.getElementById('aiIcon');
+      var text = document.getElementById('aiText');
+      
+      if (loading) {
+        btn.disabled = true;
+        icon.innerHTML = '<div class="spinner"></div>';
+        text.textContent = 'Thinking...';
+      } else {
+        btn.disabled = false;
+        icon.innerHTML = '✨';
+        text.textContent = 'AI Suggest';
+      }
+    }
+    
+    async function generateWithAI() {
+      var objectName = document.getElementById('objectName').value.trim();
+      var domainContext = document.getElementById('domainContext').value;
+      
+      if (!objectName) {
+        showAIStatus('Please enter an object name first', 'error');
+        return;
+      }
+      
+      setAILoading(true);
+      showAIStatus('Generating suggestions for "' + objectName + '"...');
+      
+      // Send request to main thread for API call
+      window.parent.postMessage({
+        pluginMessage: {
+          type: 'ai-suggest',
+          objectName: objectName,
+          domainContext: domainContext
+        }
+      }, '*');
+    }
+    
+    // Listen for AI response from main thread
+    window.onmessage = function(event) {
+      var msg = event.data.pluginMessage;
+      if (!msg) return;
+      
+      if (msg.type === 'ai-response') {
+        setAILoading(false);
+        
+        if (msg.error) {
+          showAIStatus('AI Error: ' + msg.error, 'error');
+          return;
+        }
+        
+        aiSuggestions = msg.suggestions;
+        
+        // Update counts based on suggestions
+        if (aiSuggestions.attributes) {
+          document.getElementById('attrCount').value = aiSuggestions.attributes.length;
+        }
+        if (aiSuggestions.nestedObjects) {
+          document.getElementById('relCount').value = aiSuggestions.nestedObjects.length;
+        }
+        if (aiSuggestions.ctas) {
+          document.getElementById('ctaCount').value = aiSuggestions.ctas.length;
+        }
+        if (aiSuggestions.definition) {
+          document.getElementById('objectDef').value = aiSuggestions.definition;
+        }
+        
+        var sourceLabel = aiSuggestions.source === 'ai' ? '🤖 AI' : '📚 Smart Template';
+        showAIStatus('✓ ' + sourceLabel + ' generated ' + 
+          (aiSuggestions.attributes?.length || 0) + ' attributes, ' +
+          (aiSuggestions.nestedObjects?.length || 0) + ' nested objects, ' +
+          (aiSuggestions.ctas?.length || 0) + ' CTAs', 'success');
+      }
+    };
+    
+    function onCancel() {
+      window.parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
+    }
+    
+    function onGenerate() {
+      var sizes = [];
+      if (document.getElementById('sizeXXS').checked) sizes.push('XXS');
+      if (document.getElementById('sizeXS').checked) sizes.push('XS');
+      if (document.getElementById('sizeS').checked) sizes.push('S');
+      if (document.getElementById('sizeM').checked) sizes.push('M');
+      if (document.getElementById('sizeL').checked) sizes.push('L');
+      if (document.getElementById('sizeXL').checked) sizes.push('XL');
+      if (document.getElementById('sizeXXL').checked) sizes.push('XXL');
+      
+      window.parent.postMessage({
+        pluginMessage: {
+          type: 'generate',
+          objectName: document.getElementById('objectName').value.trim() || 'OBJECT',
+          objectTag: document.getElementById('objectTag').value.trim(),
+          objectDef: document.getElementById('objectDef').value.trim(),
+          stage: document.getElementById('stage').value.trim() || 'etape du parcours',
+          sizes: sizes,
+          attrCount: parseInt(document.getElementById('attrCount').value) || 8,
+          relCount: parseInt(document.getElementById('relCount').value) || 5,
+          ctaCount: parseInt(document.getElementById('ctaCount').value) || 6,
+          aiSuggestions: aiSuggestions
+        }
+      }, '*');
+    }
+    
+    document.querySelectorAll('input[type="text"], input[type="number"]').forEach(function(el) {
+      el.onkeypress = function(e) { if (e.key === 'Enter') onGenerate(); };
+    });
+  </script>
+</body>
+</html>

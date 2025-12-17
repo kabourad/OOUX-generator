@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Compiled output (contains embedded API key - never commit!)
+code.js
+
+# API Keys - NEVER commit these
+config.ts
+.env
+.env.local
+*.key
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
